@@ -1,0 +1,13 @@
+{
+    "elastic": {
+        "enable" : true,
+        "ip" : "localhost",
+        "port" : 9200
+    },
+    
+    "syslog": {
+        "enable" : true,
+        "ip" : "localhost",
+        "port" : 514
+    }
+}
