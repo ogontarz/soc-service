@@ -5,6 +5,7 @@ const Ajv = require("ajv");
 const bodyParser = require("body-parser");
 //const signer = require("./signer.js");
 
+
 const {Queue, QueueConsumer} = require("./queue");
 const ElasticConsumer = require("./elastic-consumer");
 const SyslogConsumer = require("./syslog-consumer");
@@ -48,7 +49,7 @@ if (useSyslog == true) {
 
 
 const app = express();
-const port = 81;
+const port = 3000;
 
 
 let schema = require("./schema.json")
@@ -63,22 +64,32 @@ app.use(bodyParser.json());
 
 
 app.get("/", (request, response) => {
-    response.send("Hello from Express!");
+    var html = '<html><head><meta charset="utf-8"><title>SOC microservice</title></head><body>';
+    html += '<form action="/events" method="post"><textarea style="height:600px;width:800px" name="value" value=""></textarea>';
+    html += '<p><input type="submit" value="POST"></p></form></body></html>';
+    response.send(html);
 });
 
 
 app.post("/events", (req, res) => {
-    let isValid = validate(req.body);
+    let json = req.body; 
+    
+    // if event comes from html form, extract textarea input
+    if (json.hasOwnProperty("value")) {
+        json = JSON.parse(json.value);
+    }
+
+    let isValid = validate(json);
     if (isValid) {
         res.statusCode = 200;
         res.send("OK");  
         //let hmac = signer.sign(req.body, "secret");
 
         if (useElastic) {
-            elasticQueue.addToQueue(req.body);
+            elasticQueue.addToQueue(json);
         }
         if (useSyslog) {
-            syslogQueue.addToQueue(req.body);
+            syslogQueue.addToQueue(json);
         }
     } else {
         res.statusCode = 400;
