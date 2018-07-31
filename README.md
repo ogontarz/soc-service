@@ -7,7 +7,7 @@ Zainstalować [nodejs](https://nodejs.org/en/) w wersji 8.11.3.
 
 Wersję zainstalowanego node'a można sprawdzić z konsoli komendą:
 ```node --version```.
-Automatycznie powienien zainstalować się również manager pakietów npm. ```npm --version``` powinno zwrócić wersję 5.6.0.
+Jednocześnie zainstaluje się również manager pakietów npm. ```npm --version``` powinno zwrócić wersję 5.6.0.
 
 
 #### Krok 2:
@@ -31,7 +31,7 @@ Plik *config.json* zawiera dwie sekcje: *elastic* oraz *syslog*. W każdej z nic
 W konsoli przejść do katalogu, w którym znajdują się wypakowane pliki projektu i wykonać komendę:
 ```npm install```.
 
-W tej chwili manager pakietów npm powinien pobrać i zainstalować wszystkie zależości projektu. W katalogu powien pojawić się nowy folder o nazwie *node_modules*.
+W tej chwili manager pakietów npm pobierze i zainstaluje wszystkie zależości projektu. W katalogu powinien pojawić się nowy folder o nazwie *node_modules*.
 
 
 
@@ -48,7 +48,7 @@ Serwis zostanie uruchomiony na *localhost:3000*.
 Pojedyncze zapytanie.
 
 
-Korzystając z przeglądarki, przejść pod adres *localhost:3000* i polu tekstowym wpisać event w formacie json. Po kliknięciu przycisku *POST*, json zostanie wysłany do serwisu, a następnie, jeśli ma on poprawną strukturę, przesłany do sysloga i/lub elasticsearcha w zależności do ustawień w pliku *config.json*. W odpowiedzi zostanie przesłana odpowiedź *OK*. Przykładowy json poprawnie przechodzący walidację znajduje się w pliku *test.json*.
+Korzystając z przeglądarki, przejść pod adres *localhost:3000* i polu tekstowym wpisać event w formacie json. Po kliknięciu przycisku *POST*, json zostanie wysłany do serwisu, a następnie, jeśli ma on poprawną strukturę, dodany do sysloga i/lub elasticsearcha w zależności do ustawień w *config.json*. W odpowiedzi zostanie przesłana odpowiedź *OK*. Przykładowy json poprawnie przechodzący walidację można znaleźć w pliku *test.json*.
 
 
 
@@ -56,7 +56,7 @@ Korzystając z przeglądarki, przejść pod adres *localhost:3000* i polu teksto
 Wiele jednoczesnych zapytań.
 
 
-W tym przypadku należy pobrać [Apache Benchmark](http://httpd.apache.org/docs/current/programs/ab.html). Po przejściu do folderu, którym znajduje się program ab, poprzez uruchomienie go z konsoli z różnymi parametrami, można przetestować szybkość obsługiwania zapytań przez serwis. Przykladowa komenda testująca:
+W tym przypadku należy pobrać [Apache Benchmark](http://httpd.apache.org/docs/current/programs/ab.html). Po przejściu do folderu, którym znajduje się program ab, poprzez uruchomienie go z konsoli z różnymi parametrami, można dodać wiele eventów za jednym zamachem, a także przetestować szybkość obsługiwania zapytań przez serwis. Przykładowa komenda testująca:
 
 
 ```ab -p test.json -T application/json -n 10000 -c 100 -k http://localhost:3000/events```, gdzie: 
@@ -64,5 +64,5 @@ W tym przypadku należy pobrać [Apache Benchmark](http://httpd.apache.org/docs/
 - *-n 10000* oznacza, że łącznie zostanie wysłanych 10000 requestów,
 - *-c 100*, to liczba jednoczesnych połaczeń symulujących różnych klientów.
 
-Po zakończeniu testu otrzymujemy informacje o statystykach wykonania testu.
+Po zakończeniu testu otrzymujemy informacje o statystykach z jego wykonania.
 
