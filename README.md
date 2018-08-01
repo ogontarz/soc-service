@@ -23,7 +23,7 @@ Pobrać kod źródłowy w paczce .zip i wypakować w wybranym miejscu na dysku. 
 #### Krok 4:
 Otworzyć plik *config.json* w edytorze tekstowym i ustawić w nim wybraną konfigurację projektu. 
 
-Plik *config.json* zawiera dwie sekcje: *elastic* oraz *syslog*. W każdej z nich należy wpisać odpowiednie wartości adresów ip oraz portów, na których działają uruchomione usługi. W przypadku, gdy ustawimy wartość pola *enable* na *false*, wybrana usługa nie będzie wykorzystana, a wartości wpisane w polach *ip* i *port* zostaną zignorowane.
+Plik *config.json* zawiera dwie sekcje: *elastic* oraz *syslog*. W każdej z nich należy wpisać odpowiednie wartości adresów ip oraz portów, na których działają uruchomione usługi. W przypadku, gdy ustawimy wartość pola *enable* na *false*, wybrana usługa nie będzie wykorzystana, a wartości wpisane w polach *ip* i *port* zostaną zignorowane. Połączenie z syslog serwerem odbywa się przez protokół TCP.
 
 
 
@@ -48,7 +48,7 @@ Serwis zostanie uruchomiony na *localhost:3000*.
 Pojedyncze zapytanie.
 
 
-Korzystając z przeglądarki, przejść pod adres *localhost:3000* i polu tekstowym wpisać event w formacie json. Po kliknięciu przycisku *POST*, json zostanie wysłany do serwisu, a następnie, jeśli ma on poprawną strukturę, dodany do sysloga i/lub elasticsearcha w zależności do ustawień w *config.json*. W odpowiedzi zostanie przesłana odpowiedź *OK*. Przykładowy json poprawnie przechodzący walidację można znaleźć w pliku *test.json*.
+Korzystając z przeglądarki, przejść pod adres *localhost:3000* i polu tekstowym wpisać event w formacie json. Po kliknięciu przycisku *POST*, json zostanie wysłany do serwisu, a następnie, jeśli ma on poprawną strukturę, dodany do sysloga i/lub elasticsearcha w zależności do ustawień w *config.json*. W odpowiedzi zostanie przesłana odpowiedź *OK*. Przykładowy json poprawnie przechodzący walidację można znaleźć w pliku *test.json*. Format jsonów, które uznawane są za poprawne, zdefiniowany jest w pliku *schema.json*.
 
 
 
