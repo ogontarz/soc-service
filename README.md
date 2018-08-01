@@ -37,7 +37,7 @@ W tej chwili manager pakietów npm pobierze i zainstaluje wszystkie zależości 
 
 #### Krok 6:
 Uruchomić serwis poprzez wykonanie komendy:
-```node index.js```
+```node start.js```
 Serwis zostanie uruchomiony na *localhost:3000*.
 
 
