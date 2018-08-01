@@ -29,7 +29,7 @@ if (useElastic == true) {
     }
     let elasticConsumer = new ElasticConsumer(config.elastic.ip, config.elastic.port); 
     elasticQueue.registerConsumer(elasticConsumer);
-    console.log("elastic ok");
+    console.log("Elasticsearch server configuraion ok");
 } 
 
 let useSyslog = config.syslog.enable;
@@ -44,12 +44,15 @@ if (useSyslog == true) {
     }
     let syslogConsumer = new SyslogConsumer(config.syslog.ip, config.syslog.port);
     syslogQueue.registerConsumer(syslogConsumer);
-    console.log("syslog ok");
+    console.log("Syslog server configuration ok");
 }
 
 
 const app = express();
-const port = 3000;
+
+// get port value from command line argument
+const args = process.argv.slice(2);
+const port = args[0] || 3000;
 
 
 let schema = require("./schema.json")
@@ -141,7 +144,7 @@ app.post("/schema", (request, response) => {
 
 app.listen(port, (err) => {
     if (err) {
-        return console.log("something bad happened", err);
+        return console.log("Something bad happened", err);
     }
-    console.log("server is listening on port " + port);
+    console.log("Server is listening on port " + port);
 });
