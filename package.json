@@ -19,5 +19,14 @@
     "forever-monitor": "^1.7.1",
     "net": "^1.0.2",
     "promise-socket": "^3.1.1"
-  }
+  },
+  "bundledDependencies": [
+    "ajv",
+    "body-parser",
+    "elasticsearch",
+    "express",
+    "forever-monitor",
+    "net",
+    "promise-socket"
+  ]
 }
