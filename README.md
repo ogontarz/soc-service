@@ -12,16 +12,16 @@ REST API serwisu składa się z kilku endpointów:
 - POST /events - umożliwia przesłanie pojedynczego eventu do systemu
 - GET /schema - zwraca format schemy, według którego walidowane się przychodzące eventy
 - POST /schema - pozwala na przesłanie schemy, która używana jest do walidacji, [generowanie schemy](https://github.com/olagontarz/schema-generator)
-- GET /stats - zwraca uproszczone statystyki z działania serwisu od czasu jesgo uruchomienia - liczbę eventów, które przesłano do serwisu oraz liczbę evntów, która poprawnie przeszły walidację
+- GET /stats - zwraca uproszczone statystyki z działania serwisu od czasu jego uruchomienia - liczbę eventów, które przesłano do serwisu oraz liczbę eventów, która poprawnie przeszły walidację
 
-Zapytania typu POST można wykonać przy użyciu zewnętrznej aplikacji np. Postman albo korzystając z programu curl. JSON, który chcemy przesłać do serwisu (event lub format schemy) powienien znaleźć się w *Body* zapytania.
+Zapytania typu POST można wykonać przy użyciu zewnętrznej aplikacji np. Postman albo korzystając z programu curl. JSON, który chcemy przesłać do serwisu (czyli event albo format schemy) powienien znaleźć się w *Body* zapytania.
 
 
-Format każdego przychodzącego pod /events eventu w formacie JSON jest walidowany zgodnie z zapisaną w pamięci programu schemą. niepoprawny eventy są ignorowane, natomiast te zgodne ze zdefiniowanym formatem są następnie przekazywane dalej - w zależności od ustawień konfiguracyjnych - do elasticsearcha i/lub sysloga. W obu tych przypadkach, dla poprawy wydajności, został wykorzystany mechanizm kolejek, które zbierają określoną liczbę eventów, a następnie wysyłają je grupowo, "na raz". Liczba równoczesnie działających kolejek i ich pojemności jest konfigurowalna. 
+Format każdego przychodzącego pod */events* eventu w formacie JSON jest walidowany zgodnie z zapisaną w pamięci programu schemą. Niepoprawne eventy są ignorowane, natomiast te zgodne ze zdefiniowanym formatem są przekazywane dalej - w zależności od ustawień konfiguracyjnych - do elasticsearcha i/lub sysloga. W obu tych przypadkach, dla poprawy wydajności, został wykorzystany mechanizm kolejek, które zbierają określoną liczbę eventów, a następnie wysyłają je grupowo, "na raz". Liczba równoczesnie działających kolejek i ich pojemności jest konfigurowalna. 
 
-W usłudze elasticsearch, przechodzący event dodany zostanie do indeksu o nazwie *rok-miesiąc-dzień* (np. 2018-08-22) daty przejścia przez serwis.
+W usłudze elasticsearch, każdy nowy event dodany zostanie do indeksu o nazwie *rok-miesiąc-dzień* (np. 2018-08-22) daty przejścia przez serwis.
 
-Docelowo, serwis zostanie udostępniony jako *docker image* w [rezpozytorium](https://hub.docker.com/u/olagontarz/), skąd w łatwy sposób będzie można go pobrać i uruchomić.
+Docelowo, serwis zostanie udostępniony jako *docker image* w [rezpozytorium Docker Hub](https://hub.docker.com/u/olagontarz/), skąd w łatwy sposób będzie można go pobrać i uruchomić.
 
 
 
