@@ -3,6 +3,7 @@ const elasticMod = require("elasticsearch");
 const { Queue, QueueConsumer } = require("./queue"); // eslint-disable-line no-unused-vars
 
 class ElasticConsumer extends QueueConsumer {
+
     constructor(host, port) {
         super();
         this._indexName = "events";
@@ -14,12 +15,15 @@ class ElasticConsumer extends QueueConsumer {
     }
 
     consume(buffer) {
+        let today = new Date();
+        let index = today.toISOString().substring(0, 10);
+
         let elasticData = [];
 
         for (let i = 0; i < buffer.length; i++) {
             elasticData.push({
                 index: {
-                    _index: this._indexName,
+                    _index: index,
                     _type: this._typeName
                 }
             }, buffer[i]);
