@@ -27,6 +27,7 @@
     "express",
     "forever-monitor",
     "net",
-    "promise-socket"
+    "promise-socket",
+    "log-timestamp"
   ]
 }

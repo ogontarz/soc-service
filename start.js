@@ -1,11 +1,9 @@
 const forever = require("forever-monitor");
-const port = 3000;
 const restarts = 3;
 
 let child = new (forever.Monitor)("index.js", {
     max: restarts,
     silent: false,
-    args: [port]
 });
 
 child.on("start", () => {
