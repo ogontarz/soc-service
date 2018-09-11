@@ -1,10 +1,10 @@
 /* jshint esversion: 6*/
 
+require('log-timestamp');
+
 const express = require("express");
 const Ajv = require("ajv");
 const bodyParser = require("body-parser");
-require('log-timestamp');
-
 
 const signer = require("./signer.js");
 const {Queue, QueueConsumer} = require("./queue");
@@ -20,11 +20,13 @@ let useSyslog = process.env.syslog == "true";
 
 if (useElastic) {
     let elasticConsumer = new ElasticConsumer(process.env.elastic_ip, process.env.elastic_port); 
+    
     elasticQueue.registerConsumer(elasticConsumer);
     console.log("Elasticsearch server configuraion OK on " + process.env.elastic_ip + ":" + process.env.elastic_port);
 } 
 if (useSyslog) {
     let syslogConsumer = new SyslogConsumer(process.env.syslog_ip, process.env.syslog_port);
+
     syslogQueue.registerConsumer(syslogConsumer);
     console.log("Syslog server configuration OK on " + process.env.syslog_ip + ":" + process.env.syslog_port);
 }
@@ -59,7 +61,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json({ limit: "200000"}));
 app.use(jsonParseError);
-
 
 app.get("/", (request, response) => {
     var html = '<html><head><meta charset="utf-8"><title>SOC microservice</title></head><body>';
@@ -102,7 +103,7 @@ app.post("/events", (request, response) => {
                 console.log("Adding event to the syslog consumer queue");
             }
         }
-
+        
         let hmac = signer.sign(request.body, "secret");
         validatedRequests++;
 
@@ -125,7 +126,7 @@ app.get("/schema", (request, response) => {
 
 app.post("/schema", (request, response) => {
     response.statusCode = 200;
-    response.send("OK");
+    response.send("OK, schema updated");
     schema = request.body;
     validate = ajv.compile(schema);
 });

@@ -134,7 +134,7 @@ class Queue {
                 this._startBufferFlush(bufferNumber);
         } catch (error) {
             console.log(error);
-            // throw Error(error);
+            throw Error(error);
         }
     }
 

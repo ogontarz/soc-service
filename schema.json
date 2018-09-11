@@ -3,32 +3,26 @@
     "properties": {
         "eventType": {
             "type": "string",
-            "enum": ["transfer", "deposit"]
+            "enum": ["domestic-transfer"]
         },
         "security": {
             "type": "object",
             "properties": {
-                "eventCategory": {
+                "logType": {
+                    "type": "string",
+                    "enum": ["INFO", "SECURITY", "ERROR", "WARN"]
+                },
+                "user": {
                     "type": "string"
                 },
-                "startTime": {
-                    "type": "string",
-                    "format": "date-time"
+                "userAlias": {
+                    "type": "string"
                 },
-                "endTime": {
+                "eventTime": {
                     "type": "string",
                     "format": "date-time"
                 },
                 "sessionId": {
-                    "type": "string"
-                },
-                "flowId": {
-                    "type": "string"
-                },
-                "userId": {
-                    "type": "string"
-                },
-                "userAI2": {
                     "type": "string"
                 },
                 "channel": {
@@ -39,21 +33,14 @@
                     "type": "string",
                     "format": "ipv4"
                 },
-                "userAgent": {
+                "browser": {
                     "type": "string"
                 },
-                "langOS": {
-                    "type": "string",
-                    "enum": ["ENG", "PL"]
-                },
-                "screenResolution": {
-                    "type": "string"
-                },
-                "fpId": {
+                "fingerprint": {
                     "type": "string"
                 }
             },
-            "required": ["eventCategory", "startTime", "endTime", "sessionId", "flowId", "userId", "userAI2", "channel", "ipAddress", "userAgent", "langOS", "screenResolution", "fpId"],
+            "required": ["logType", "user", "userAlias", "eventTime", "sessionId", "channel", "ipAddress", "browser", "fingerprint"],
             "additionalProperties": false
         }
     },
@@ -61,27 +48,30 @@
     "oneOf": [{
         "properties": {
             "eventType": {
-                "enum": ["transfer"]
+                "enum": ["domestic-transfer"]
             },
             "business": {
                 "type": "object",
                 "properties": {
-                    "contextAI2": {
+                    "userId": {
+                        "type": "string"
+                    },
+                    "userAI2": {
                         "type": "string"
                     },
                     "contextEQ": {
                         "type": "string"
                     },
-                    "sourceAccNo": {
+                    "sourceAccountNo": {
                         "type": "string"
                     },
-                    "destAccNo": {
+                    "destinationAccountNo": {
                         "type": "string"
                     },
-                    "destName": {
+                    "destinationName": {
                         "type": "string"
                     },
-                    "destName2": {
+                    "destinationAddress": {
                         "type": "string"
                     },
                     "operationDate": {
@@ -94,90 +84,33 @@
                     },
                     "operationCurrency": {
                         "type": "string",
-                        "enum": ["PLN"]
+                        "enum": ["PLN", "EUR"]
                     },
                     "operationTitle": {
                         "type": "string"
                     },
-                    "operationRefNo": {
+                    "operationId": {
                         "type": "string"
                     },
-                    "operationStatus": {
-                        "type": "string",
-                        "enum": ["ORDERED"]
+                    "cenEQ": {
+                        "type": "string"
                     },
-                    "authRequired": {
-                        "type": "string",
-                        "enum": ["YES", "NO"]
+                    "statusEQ": {
+                        "type": "string"
                     },
-                    "authStatus": {
+                    "descEQ": {
+                        "type": "string"
+                    },
+                    "statusAuth": {
                         "type": "string",
-                        "enum": ["SUCCESS"]
+                        "enum": ["SUCCESS", "FAILURE"]
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["ATTEMPT", "SUCCESS", "FAILURE", "TIMEOUT"]
                     }
                 },
-                "required": ["contextAI2", "contextEQ", "sourceAccNo", "destAccNo", "destName", "destName2", "operationDate", "operationAmount", "operationCurrency", "operationTitle", "operationRefNo", "operationStatus", "authRequired", "authStatus"],
-                "additionalProperties": false
-            }
-        },
-        "required": ["eventType", "business"]
-    }, {
-        "properties": {
-            "eventType": {
-                "enum": ["deposit"]
-            },
-            "business": {
-                "type": "object",
-                "properties": {
-                    "contextAI2": {
-                        "type": "string"
-                    },
-                    "contextEQ": {
-                        "type": "string"
-                    },
-                    "sourceAccNo": {
-                        "type": "string"
-                    },
-                    "depositType": {
-                        "type": "string"
-                    },
-                    "depositName": {
-                        "type": "string"
-                    },
-                    "depositPeriod": {
-                        "type": "string"
-                    },
-                    "depositAmount": {
-                        "type": "number",
-                        "minimum": 0
-                    },
-                    "depositCurrency": {
-                        "type": "string",
-                        "enum": ["PLN"]
-                    },
-                    "depositRenew": {
-                        "type": "string",
-                        "enum": ["YES", "NO"]
-                    },
-                    "depositCapitalisation": {
-                        "type": "string",
-                        "enum": ["YES", "NO"]
-                    },
-                    "depositInterest": {
-                        "type": "string"
-                    },
-                    "operationRefNo": {
-                        "type": "string"
-                    },
-                    "operationStatus": {
-                        "type": "string",
-                        "enum": ["SUCCESS"]
-                    },
-                    "authRequired": {
-                        "type": "string",
-                        "enum": ["YES", "NO"]
-                    }
-                },
-                "required": ["contextAI2", "contextEQ", "sourceAccNo", "depositType", "depositName", "depositPeriod", "depositAmount", "depositCurrency", "depositRenew", "depositCapitalisation", "depositInterest", "operationRefNo", "operationStatus", "authRequired"],
+                "required": ["userId", "userAI2", "contextEQ", "sourceAccountNo", "destinationAccountNo", "destinationName", "destinationAddress", "operationDate", "operationAmount", "operationCurrency", "operationTitle", "operationId", "cenEQ", "statusEQ", "descEQ", "statusAuth", "status"],
                 "additionalProperties": false
             }
         },
