@@ -28,42 +28,69 @@ Docelowo, serwis zostanie udostępniony jako *docker image* w [rezpozytorium Doc
 ## Jak uruchomić serwis?
 
 #### Krok 1:
-Zainstalować [nodejs](https://nodejs.org/en/) w wersji 8.11.3.
+Zainstalować program [Docker](https://docs.docker.com/install/).
 
-Wersję zainstalowanego node'a można sprawdzić z konsoli komendą:
-```node --version```.
-Jednocześnie zainstaluje się również manager pakietów npm. ```npm --version``` powinno zwrócić wersję 5.6.0.
+Zweryfikować poprawną instalację komendami:
+```docker --version```
+oraz
+```docker info```
 
 
 #### Krok 2:
-Uruchomić syslog server oraz (opcjonalnie, patrz krok 4) zainstalować i uruchomić usługę [elasticsearch](https://www.elastic.co/downloads/elasticsearch).
+Uruchomić syslog server oraz (opcjonalnie, patrz krok 4) zainstalować i uruchomić [elasticsearch](https://www.elastic.co/downloads/elasticsearch).
 
 
 
 #### Krok 3:
-Pobrać kod źródłowy w paczce .zip i wypakować w wybranym miejscu na dysku. Paczkę z kodem można pobrać klikając zielony przycisk *Clone or download* znajdujący się ponad wykazem plików źródłowych na niniejszej stronie.
 
+Przygotować plik konfiguracyjny z parametrami uruchomienia serwisu.
+
+Utworzyć nowy plik tekstowy o nazwie *.env* i uzupełnić w nim informację o porcie, na którym ma zostać uruchomiony serwis, o środowisku (tryb *debug* powoduje wysiwetlanie dodatkowych logów podczas działania serwisu) oraz konfiguracji sysloga i elasticsearcha. W przypadku ustawienia wartości *elastic* i/lub *syslog* na *true*, dodatkowo należy podać hosta i numer portu, na którym uruchomiona jest usługa. Przy wartości *false* dana usługa nie będzie wykorzystana, a jej parametry *host* i *port* zostaną zignorowane. 
+
+Przykład:
+```
+port=3000
+env=debug
+
+elastic=true
+elastic_ip=localhost
+elastic_port=9300
+
+syslog=true
+syslog_ip=localhost
+syslog_port=514
+```
 
 
 #### Krok 4:
-Otworzyć plik *config.json* w edytorze tekstowym i ustawić w nim wybraną konfigurację projektu. 
 
-Plik *config.json* zawiera dwie sekcje: *elastic* oraz *syslog*. W każdej z nich należy wpisać odpowiednie wartości adresów ip oraz portów, na których działają uruchomione usługi. W przypadku, gdy ustawimy wartość pola *enable* na *false*, wybrana usługa nie będzie wykorzystana, a wartości wpisane w polach *ip* i *port* zostaną zignorowane. Połączenie z syslog serwerem odbywa się przez protokół TCP.
+Docker image zbudowany z kodu źródłowego znajduję się w Docker Hub pod adresem: https://hub.docker.com/r/olagontarz/soc-service/
+
+##### W przypadku maszyny z dostępem do internetu:
+
+Uruchomić serwis komendą *docker run* z odpowiednim portem jako argumentem *-p*, ścieżką do pliku z konfiguracją *.env* oraz adresem obazu w Docker Hub.
+
+Przykład:
+```
+docker run -p 3000:3000 --env-file .env olagontarz/soc-service
+```
 
 
+##### W przypadku braku dostępu do internetu:
 
-#### Krok 5:
-W konsoli przejść do katalogu, w którym znajdują się wypakowane pliki projektu i wykonać komendę:
-```npm install```.
-
-W tej chwili manager pakietów npm pobierze i zainstaluje wszystkie zależości projektu. W katalogu powinien pojawić się nowy folder o nazwie *node_modules*.
-
-
-
-#### Krok 6:
-Uruchomić serwis poprzez wykonanie komendy:
-```node start.js```
-Serwis zostanie uruchomiony na *localhost:3000*.
+Pobrać obraz na innym urządzeniu z połączenym z siecią komendą:
+```
+docker save -o soc-service.docker olagontarz/soc-service
+```
+A następnie przenieść powstały plik soc-service.docker na docelową maszynę i wczytać do pamięci:
+```
+docker load -i soc-service.docker
+```
+A następnie uruchomić analogicznie jak w opcji z dostępem do internetu:
+```
+docker run -p 3000:3000 --env-file .env olagontarz/soc-service
+```
+Serwis zostanie uruchomiony na wybranym w konfiguracji porcie na localhost.
 
 
 
