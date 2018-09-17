@@ -85,7 +85,7 @@ app.post("/events", (request, response) => {
 
     if (validate(json)) {
         response.statusCode = 200;
-        response.send("OK");  
+        response.send(json);  
         
         if (debug) {
             console.log("Event validated correctly");
@@ -103,7 +103,7 @@ app.post("/events", (request, response) => {
                 console.log("Adding event to the syslog consumer queue");
             }
         }
-        
+
         let hmac = signer.sign(request.body, "secret");
         validatedRequests++;
 

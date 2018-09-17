@@ -92,6 +92,9 @@
                     "operationId": {
                         "type": "string"
                     },
+                    "transferId": {
+                        "type": "string"
+                    },
                     "cenEQ": {
                         "type": "string"
                     },
@@ -110,7 +113,7 @@
                         "enum": ["ATTEMPT", "SUCCESS", "FAILURE", "TIMEOUT"]
                     }
                 },
-                "required": ["userId", "userAI2", "contextEQ", "sourceAccountNo", "destinationAccountNo", "destinationName", "destinationAddress", "operationDate", "operationAmount", "operationCurrency", "operationTitle", "operationId", "cenEQ", "statusEQ", "descEQ", "statusAuth", "status"],
+                "required": ["userId", "userAI2", "contextEQ", "sourceAccountNo", "destinationAccountNo", "destinationName", "destinationAddress", "operationDate", "operationAmount", "operationCurrency", "operationTitle", "operationId", "transferId", "cenEQ", "statusEQ", "descEQ", "statusAuth", "status"],
                 "additionalProperties": false
             }
         },
