@@ -45,7 +45,7 @@ Uruchomić syslog server oraz (opcjonalnie, patrz krok 4) zainstalować i urucho
 
 Przygotować plik konfiguracyjny z parametrami uruchomienia serwisu.
 
-Utworzyć nowy plik tekstowy o nazwie .env i uzupełnić w nim informację o porcie, na którym ma zostać uruchomiony serwis, o środowisku (tryb debug powoduje wysiwetlanie dodatkowych logów podczas działania serwisu) oraz konfiguracji sysloga i elasticsearcha. W przypadku ustawienia wartości elastic i/lub syslog na true, dodatkowo należy podać hosta i numer portu, na którym uruchomiona jest usługa.
+Utworzyć nowy plik tekstowy o nazwie *.env* i uzupełnić w nim informację o porcie, na którym ma zostać uruchomiony serwis, o środowisku (tryb *debug* powoduje wysiwetlanie dodatkowych logów podczas działania serwisu) oraz konfiguracji sysloga i elasticsearcha. W przypadku ustawienia wartości *elastic* i/lub *syslog* na *true*, dodatkowo należy podać hosta i numer portu, na którym uruchomiona jest usługa. Przy wartości *false* dana usługa nie będzie wykorzystana, a jej parametry *host* i *port* zostaną zignorowane. 
 
 Przykład:
 ```
@@ -64,11 +64,11 @@ syslog_port=514
 
 #### Krok 4:
 
-Docker image zbudowany z niniejszego repozytorium znajduje się w repozytorium: https://hub.docker.com/r/olagontarz/soc-service/
+Docker image zbudowany z kodu źródłowego znajduję się w Docker Hub pod adresem: https://hub.docker.com/r/olagontarz/soc-service/
 
 ##### W przypadku maszyny z dostępem do internetu:
 
-Uruchomić serwis komendą docker run z odpowiednim portem jako argumentem -p, ścieżką do pliku z konfiguracją .env oraz adresem obazu w Docker Hub.
+Uruchomić serwis komendą *docker run* z odpowiednim portem jako argumentem *-p*, ścieżką do pliku z konfiguracją *.env* oraz adresem obazu w Docker Hub.
 
 Przykład:
 ```
@@ -90,8 +90,7 @@ A następnie uruchomić analogicznie jak w opcji z dostępem do internetu:
 ```
 docker run -p 3000:3000 --env-file .env olagontarz/soc-service
 ```
-
-Serwis zostanie uruchomiony na wybranym w konfiguracji porcie.
+Serwis zostanie uruchomiony na wybranym w konfiguracji porcie na localhost.
 
 
 
