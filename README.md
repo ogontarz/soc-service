@@ -82,7 +82,7 @@ Pobrać obraz na innym urządzeniu z połączenym z siecią komendą:
 ```
 docker save -o soc-service.docker olagontarz/soc-service
 ```
-A następnie przenieść powstały plik soc-service.docker na docelową maszynę i wczytać do pamięci:
+Przenieść powstały plik *soc-service.docker* na docelową maszynę i wczytać do pamięci:
 ```
 docker load -i soc-service.docker
 ```
