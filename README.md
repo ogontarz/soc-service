@@ -78,7 +78,7 @@ docker run -p 3000:3000 --env-file .env olagontarz/soc-service
 
 ##### W przypadku braku dostępu do internetu:
 
-Pobrać obraz na innym urządzeniu z połączenym z siecią komendą:
+Pobrać obraz na innym urządzeniu (z zainstalowanym Dockerem i z połączeniem z siecią) komendą:
 ```
 docker save -o soc-service.docker olagontarz/soc-service
 ```
