@@ -30,7 +30,7 @@ app.use((err, req, res, next) => {
 
 
 app.get('/', (request, response) => {
-  response.sendFile(path.join(__dirname, '/events.html'));
+  response.sendFile(path.join(__dirname, '/public/events.html'));
 });
 
 
@@ -63,16 +63,16 @@ app.get('/schema', (request, response) => {
 
 
 app.get('/schema/update', (request, response) => {
-  response.sendFile(path.join(__dirname, '/schema.html'));
+  response.sendFile(path.join(__dirname, '/public/schema.html'));
 });
 
 
 app.post('/schema', (request, response) => {
-  response.statusCode = 200;
-  response.json(schema.get());
-
   const json = Utils.extractValue(request.body);
   schema.set(json);
+
+  response.statusCode = 200;
+  response.json(json);
 });
 
 

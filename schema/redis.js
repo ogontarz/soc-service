@@ -25,7 +25,7 @@ class RedisClient {
 
   setSchema(schema) {
     this.redis.set(SCHEMA_KEY, JSON.stringify(schema));
-    console.log('New schema posted - schema updated');
+    console.log('New schema posted - schema updated in redis');
   }
 }
 
