@@ -49,16 +49,24 @@ Utworzyć nowy plik tekstowy o nazwie *.env* i uzupełnić w nim informację o p
 
 Przykład:
 ```
-port=3000
-env=debug
+NODE_ENV=test
 
-elastic=true
-elastic_ip=localhost
-elastic_port=9300
+APP_PORT=3000
+APP_DEBUG=true
 
-syslog=true
-syslog_ip=localhost
-syslog_port=514
+QUEUE_NUMBER=20
+QUEUE_SIZE=2000
+
+REDIS_HOST='localhost'
+REDIS_PORT=6379
+
+SYSLOG_USE=true
+SYSLOG_HOST='localhost'
+SYSLOG_PORT=514
+
+ELASTIC_USE=false
+ELASTIC_HOST='localhost'
+ELASTIC_PORT=9200
 ```
 
 
