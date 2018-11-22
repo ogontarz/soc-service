@@ -1,23 +1,24 @@
-const forever = require("forever-monitor");
+const forever = require('forever-monitor');
+
 const restarts = 3;
 
-let child = new (forever.Monitor)("index.js", {
-    max: restarts,
-    silent: false,
+const child = new (forever.Monitor)('app.js', {
+  max: restarts,
+  silent: false,
 });
 
-child.on("start", () => {
-    console.log("Starting service...");
-})
-
-process.on('SIGINT', function() {
-    console.log("Exiting service...")
-    child.stop();
-    process.exit();
+child.on('start', () => {
+  console.log('Starting service...');
 });
 
-child.on("exit", function () {
-    console.log("Service has exited after " + restarts + " restarts");
+process.on('SIGINT', () => {
+  console.log('Exiting service...');
+  child.stop();
+  process.exit();
+});
+
+child.on('exit', () => {
+  console.log(`Service has exited after ${restarts} restarts`);
 });
 
 child.start();

@@ -1,8 +1,22 @@
-.git
-.cache
-README.md
+test 
 
-*.log
+node_modules
+npm-debug.log
+
+Dockerfile*
+docker-compose*
+
+*.docker
+.dockerignore
+
+.git
 .gitignore
 
-test.json
+README.md
+LICENSE
+
+.env
+.vscode
+.eslintcache
+.eslintrc.json
+.cache
