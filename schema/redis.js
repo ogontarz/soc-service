@@ -17,7 +17,7 @@ class RedisClient {
         callback(JSON.parse(reply));
       } else {
         console.log('No schema file in redis - schema file is empty');
-        callback(JSON.parse({}));
+        callback(undefined);
       }
     });
   }

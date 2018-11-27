@@ -19,11 +19,10 @@ class Queue {
     this.buffer = new Array(buffersNumber);
     this.bufferCurrentSize = new Array(buffersNumber);
 
-    for (let i = 0; i < buffersNumber; i += 1) {
+    for (let i = 0; i < buffersNumber; i++) {
       this.buffer[i] = [];
       this.flushInProgress[i] = false;
       this.bufferCurrentSize[i] = 0;
-
       this.flushLastTime[i] = process.hrtime()[START_INDEX];
     }
   }
@@ -57,24 +56,21 @@ class Queue {
     this.bufferCurrentSize[bufferNumber] = 0;
     this.flushInProgress[bufferNumber] = false;
 
-    // complete buffer is empty, so that we can notify up to BUFFER_LEN observers
+    // buffer is empty, so that we can notify up to BUFFER_LEN observers
     // console.log(this._observers.length);
     let toNotify = Math.min(this.observers.length, this.bufferMaxSize);
-    while (toNotify > 0) {
-      process.nextTick(this.observers.shift());
-      toNotify -= 1;
-    }
+    while (toNotify--) process.nextTick(this.observers.shift());
   }
 
   findBufferWithEmptySpace() {
-    for (let i = 0; i < this.buffersNumber; i += 1) {
-      if (!this.flushInProgress[i]) return i;
+    for (let i = 0; i < this.buffersNumber; i++) {
+      if (!this.flushInProgress[i] && this.bufferCurrentSize[i] < this.bufferMaxSize) return i;
     }
     throw new Error('Internal error - no buffers with empty space - sth wrong with internal queue synchronization');
   }
 
   areAllBuffersFlushing() {
-    for (let i = 0; i < this.buffersNumber; i += 1) {
+    for (let i = 0; i < this.buffersNumber; i++) {
       if (!this.flushInProgress[i]) return false;
     }
     return true;
@@ -82,7 +78,7 @@ class Queue {
 
   bufferTimeFlush() {
     const maxSeconds = process.hrtime()[0] - this.bufferFlushSeconds;
-    for (let i = 0; i < this.buffersNumber; i += 1) {
+    for (let i = 0; i < this.buffersNumber; i++) {
     // if buffer contains data and defined time elapsed initiate buffer flush
       if (this.bufferCurrentSize[i] > 0 && !this.flushInProgress[i] && this.flushLastTime[i] <= maxSeconds) {
         // console.log("flushing buffer:" + i);

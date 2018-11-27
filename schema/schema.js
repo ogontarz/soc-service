@@ -1,5 +1,5 @@
 const Ajv = require('ajv');
-const RedisClient = require('./redis-client');
+const RedisClient = require('./redis.js');
 const config = require('../config.js');
 
 class Schema {
@@ -7,14 +7,16 @@ class Schema {
     this.redisClient = new RedisClient();
     this.ajv = new Ajv({ verbose: true });
     this.redisClient.getSchema((result) => {
-      if (config.app.debug) console.log(JSON.stringify(result, undefined, 2));
       this.schema = result;
-      this.validator = this.ajv.compile(result);
+      if (!this.isEmpty()) {
+        if (config.app.debug) console.log(JSON.stringify(result, undefined, 2));
+        this.validator = this.ajv.compile(result);
+      }
     });
   }
 
   isEmpty() {
-    return this.schema === {};
+    return this.schema === undefined;
   }
 
   get() {
