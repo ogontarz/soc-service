@@ -18,6 +18,7 @@
     "express": "^4.16.3",
     "forever-monitor": "^1.7.1",
     "log-timestamp": "^0.2.1",
+    "morgan": "^1.9.1",
     "net": "^1.0.2",
     "promise-socket": "^3.1.1",
     "redis": "^2.8.0"

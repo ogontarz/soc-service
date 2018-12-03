@@ -3,20 +3,22 @@ require('log-timestamp');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 
 const config = require('./config.js');
 const Utils = require('./utils/utils.js');
-const Logger = require('./utils/logger.js');
 const Schema = require('./schema/schema.js');
 
 const ElasticClient = require('./service/elastic-client.js');
 const SyslogClient = require('./service/syslog-client.js');
 
-const logger = new Logger();
-const schema = new Schema();
 const services = [new ElasticClient(), new SyslogClient()];
+const schema = new Schema();
 
 const app = express();
+
+morgan.format('format', '[:date[iso]] ":method :url" :status - :response-time ms - :remote-addr');
+app.use(morgan('format', { stream: process.stdout }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -38,20 +40,22 @@ app.post('/events', (request, response) => {
   if (schema.isEmpty()) {
     response.statusCode = 200;
     response.json({ info: 'No schema file - event ingnored' });
+    if (config.app.debug) console.log('No schema file posted - event ignored');
     return;
   }
 
   const json = Utils.extractValue(request.body);
   const validated = schema.validate(json);
-  logger.log(validated, json);
 
   if (validated) {
     response.statusCode = 200;
     response.send(json);
+    if (config.app.debug) console.log('Received new SUCCESSFULLY VALIDATED event');
     services.forEach(service => service.post(json));
   } else {
     response.statusCode = 400;
     response.json({ error: 'Incorrect json format' });
+    if (config.app.debug) console.log('Received NOT VALID event, event ignored');
   }
 });
 
@@ -73,19 +77,6 @@ app.post('/schema', (request, response) => {
 
   response.statusCode = 200;
   response.json(json);
-});
-
-
-app.get('/stats', (request, response) => {
-  response.statusCode = 200;
-  response.json(logger.getStats());
-});
-
-
-app.get('/stats/reset', (request, response) => {
-  response.statusCode = 200;
-  logger.resetStats();
-  response.json(logger.getStats());
 });
 
 
