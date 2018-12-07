@@ -14,7 +14,6 @@ class ElasticClient {
   post(json) {
     if (config.elastic.use) {
       this.elasticQueue.addToQueue(json);
-      if (config.app.debug) console.log('Adding validated event to the elastic consumer queue');
     }
   }
 }

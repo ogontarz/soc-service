@@ -3,7 +3,6 @@ const PromiseSocket = require('promise-socket');
 
 const JsonSerializer = require('../utils/serializer.js');
 const QueueConsumer = require('./queue-consumer.js');
-const config = require('../config.js');
 
 const LOG_INFO = 6;
 
@@ -33,7 +32,6 @@ class SyslogConsumer extends QueueConsumer {
     const promiseSocket = new PromiseSocket(socket);
     socket.setNoDelay(true);
 
-    if (config.app.debug) console.log('Flushing event queue to syslog service');
     try {
       await promiseSocket.connect(this.port, this.host);
       await promiseSocket.write(message);

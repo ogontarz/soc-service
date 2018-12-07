@@ -9,8 +9,12 @@ class ElasticConsumer extends QueueConsumer {
     this.typeName = '_doc';
     this.elasticClient = new elasticMod.Client({
       host: `${host}:${port}`,
-      log: 'info',
+      log: [{
+        type: 'stdio',
+        levels: ['error', 'warning'],
+      }],
     });
+    console.log(`${process.env.INSTANCE_ID} Elsaticsearch server configuraion OK on ${config.elastic.host}:${config.elastic.port}`);
   }
 
   consume(buffer) {
@@ -26,7 +30,6 @@ class ElasticConsumer extends QueueConsumer {
         },
       }, buffer[i]);
     }
-    if (config.app.debug) console.log('Flushing event queue to elasticsearch service');
     return this.elasticClient.bulk({
       body: elasticData,
     });

@@ -15,9 +15,10 @@ const SyslogClient = require('./service/syslog-client.js');
 const services = [new ElasticClient(), new SyslogClient()];
 const schema = new Schema();
 
+const INSTANCE = process.env.INSTANCE_ID;
 const app = express();
 
-morgan.format('format', '[:date[iso]] ":method :url" :status - :response-time ms - :remote-addr');
+morgan.format('format', `[:date[iso]] ${INSTANCE} ":method :url" :status - :response-time ms - :res[content-length] - :remote-addr`);
 app.use(morgan('format', { stream: process.stdout }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -39,23 +40,20 @@ app.get('/', (request, response) => {
 app.post('/events', (request, response) => {
   if (schema.isEmpty()) {
     response.statusCode = 200;
-    response.json({ info: 'No schema file - event ingnored' });
-    if (config.app.debug) console.log('No schema file posted - event ignored');
-    return;
-  }
-
-  const json = Utils.extractValue(request.body);
-  const validated = schema.validate(json);
-
-  if (validated) {
-    response.statusCode = 200;
-    response.send(json);
-    if (config.app.debug) console.log('Received new SUCCESSFULLY VALIDATED event');
-    services.forEach(service => service.post(json));
+    response.json({});
+    console.log(`${INSTANCE} No schema file posted - event ignored`);
   } else {
-    response.statusCode = 400;
-    response.json({ error: 'Incorrect json format' });
-    if (config.app.debug) console.log('Received NOT VALID event, event ignored');
+    const json = Utils.extractValue(request.body);
+    const validated = schema.validate(json);
+    if (validated) {
+      response.statusCode = 200;
+      response.send(json);
+      services.forEach(service => service.post(json));
+    } else {
+      response.statusCode = 400;
+      response.json({ error: 'Incorrect json format' });
+      console.log(JSON.stringify(json, undefined, 2));
+    }
   }
 });
 
@@ -81,7 +79,6 @@ app.post('/schema', (request, response) => {
 
 
 app.listen(config.app.port, (err) => {
-  if (err) return console.log('Something bad happened', err);
-  if (config.app.debug) console.log('Running in DEBUG mode');
-  return console.log(`Server is listening on port ${config.app.port}`);
+  if (err) return console.log(`${INSTANCE} Something bad happened`, err);
+  return console.log(`${INSTANCE} Server is listening on port ${config.app.port}`);
 });

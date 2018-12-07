@@ -8,7 +8,6 @@ const DOUBLE_SLASH = '//';
 const EMPTY = '';
 
 const cryptoLib = require('crypto');
-// string_escape really slows down everything by the factor of 2x
 
 class JsonSigner {
   static canonicalize(obj) {
@@ -46,6 +45,7 @@ class JsonSigner {
       buffer += ']';
     }
 
+    // string_escape really slows down everything by the factor of 2x
     function stringEscape(string) {
       return (EMPTY + string).replace(/["'\\\n\r\u2028\u2029]/g, char => DOUBLE_SLASH + char);
     }
