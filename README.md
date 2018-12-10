@@ -2,10 +2,16 @@
 
 ## Co to jest?
 
-Powyższe pliki źródłowe składają sie na prosty przejściowy mikroserwis służacy do walidacji przychodzących przez niego eventów i przesyłania ich dalej w świat. 
+Soc Service to prosty przejściowy mikroserwis, którego zadaniem jest walidowanie przychodzących do niego requestów z logami w formacie json na podstawie zdefiniowanej uprzednio [schemy](https://json-schema.org/). 
+Logi, które spełniają określone wymogi zostają następnie przekazane dalej - na chwilę obecną - do usługi syslog (skąd ocztywywany jest przez docelowy system analizy ArcSight) oraz instancji bazy danych elasticsearch. Użycie każdej ze zdefiniowanych usług jest konfigurowalne.
 
+Schemat działania serwisu:
 
 ![soc-service](https://image.ibb.co/ewcjfz/soc_service.png)
+
+
+
+
 
 
 REST API serwisu składa się z kilku endpointów:
