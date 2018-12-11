@@ -17,9 +17,9 @@ REST API serwisu składa się z 3 następujących endpointów:
 
 - POST /schema - pozwala na przesłanie nowej schemy, na podstawie której będą walidowane kolejne eventy. Wymaga restartu serwisu. 
 
-Opis i instrukcja programu do generacji schemy na podstawie plików z definicjami typów znajdują się tutaj: [generowanie schemy](https://github.com/olagontarz/schema-generator). 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Opis i instrukcja programu do generacji schemy na podstawie plików z definicjami typów znajdują się tutaj: [generowanie schemy](https://github.com/olagontarz/schema-generator). 
 
-Po przesłaniu nowy plik schema zostaje zapisany w instancji bazy danych redis pod kluczem "schema". Ze względu na fakt, że serwis przystosowany jest do działania w kilku jednoczesnych instancjach (przy użyciu managera procesów pm2), a schema odczytywana jest z redisa tylko przy starcie programu (dla poprawy wydajności), do poprawnego działania programu po przesłaniu nowej schemy będzie wymagany jego restart.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Po przesłaniu nowy plik schema zostaje zapisany w instancji bazy danych redis pod kluczem "schema". Ze względu na fakt, że serwis przystosowany jest do działania w kilku jednoczesnych instancjach (przy użyciu managera procesów pm2), a schema odczytywana jest z redisa tylko przy starcie programu (dla poprawy wydajności), do poprawnego działania programu po przesłaniu nowej schemy będzie wymagany jego restart.
 
 
 - GET /schema - zwraca aktualną schemę, która jest wykorzystywana do walidacji przychodzących eventów.
@@ -27,13 +27,12 @@ Po przesłaniu nowy plik schema zostaje zapisany w instancji bazy danych redis p
 
 - POST /events - umożliwia przesłanie pojedynczego eventu do systemu.
 
-Przesłanie poprawnie przechodzącego walidację schemą eventu skutkuje odpowiedzią z poprawnym eventem i statusie 200 OK. W przypadku, gdy w programie brakuje schemy, przychodzące eventy są ignorowane i zwracany jest kod 200 wraz z pustym jsonem w odpowiedzi.
-Event niespełniający wymagań schemy również zostanie pominięty, a w odpowiedzi pojawi się kod 400 Bad Request.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Przesłanie poprawnie przechodzącego walidację schemą eventu skutkuje odpowiedzią z poprawnym eventem i statusie 200 OK. W przypadku, gdy w programie brakuje schemy, przychodzące eventy są ignorowane i zwracany jest kod 200 wraz z pustym jsonem w odpowiedzi. Event niespełniający wymagań schemy również zostanie pominięty, a w odpowiedzi pojawi się kod 400 Bad Request.
 
-Każdy poprawny event zostanie następnie przesłany do każdej z zarejestowalnych usług - w tym przypadku do sysloga i/lub (w zależności od konfiguracji) elasticsearcha. Dla poprawy wydajności, wykorzystany został mechanizm kolejek, które najpierw zbierają określoną liczbę eventów lub odczekują odpowiednio określony czas (aktualnie jest to 5 sekund), a następnie wysyłają swoje zawartości grupowo, "na raz". Liczba równoczesnie działających kolejek i ich pojemności jest konfigurowalna. 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Każdy poprawny event zostanie następnie przesłany do każdej z zarejestowalnych usług - w tym przypadku do sysloga i/lub (w zależności od konfiguracji) elasticsearcha. Dla poprawy wydajności, wykorzystany został mechanizm kolejek, które najpierw zbierają określoną liczbę eventów lub odczekują odpowiednio określony czas (aktualnie jest to 5 sekund), a następnie wysyłają swoje zawartości grupowo, "na raz". Liczba równoczesnie działających kolejek i ich pojemności jest konfigurowalna. 
 
-W przypadku sysloga eventy wysłane są poprzez mechanizm socketów po uprzedniej kanonizacji. 
-W bazie elasticsearch nowe eventy zostają dodane do indeksu o nazwie *rok-miesiąc-dzień* (np. 2018-08-22) daty przejścia przez serwis.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;W przypadku sysloga eventy wysłane są poprzez mechanizm socketów po uprzedniej kanonizacji. 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;W bazie elasticsearch nowe eventy zostają dodane do indeksu o nazwie *rok-miesiąc-dzień* (np. 2018-08-22) daty przejścia przez serwis.
 
 
 
