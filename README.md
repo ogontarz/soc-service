@@ -1,33 +1,50 @@
-# soc-service
+# Soc Service
 
-## Co to jest?
+## Opis
 
 Soc Service to prosty przejściowy mikroserwis, którego zadaniem jest walidowanie przychodzących do niego requestów z logami w formacie json na podstawie zdefiniowanej uprzednio [schemy](https://json-schema.org/). 
-Logi, które spełniają określone wymogi zostają następnie przekazane dalej - na chwilę obecną - do usługi syslog (skąd ocztywywany jest przez docelowy system analizy ArcSight) oraz instancji bazy danych elasticsearch. Użycie każdej ze zdefiniowanych usług jest konfigurowalne.
+Logi, które spełniają określone wymogi zostają następnie przekazane dalej - na chwilę obecną - do usługi syslog (skąd odczytywany jest przez docelowy system analizy ArcSight) oraz instancji bazy danych [elasticsearch](https://www.elastic.co/). Wykorzystanie każdej ze zdefiniowanych usług jest konfigurowalne. 
 
 Schemat działania serwisu:
 
 ![soc-service](https://image.ibb.co/ewcjfz/soc_service.png)
 
+Serwis przystosowany jest do działania w kontenerze Dockerowym. Aktualny obraz programu zawsze znajduje się w [rezpozytorium Docker Hub](https://hub.docker.com/u/olagontarz/), skąd w łatwy sposób można go pobrać i uruchomić. 
+
+
+
+REST API serwisu składa się z 3 następujących endpointów:
+
+- POST /schema - pozwala na przesłanie nowej schemy, na podstawie której będą walidowane kolejne eventy. Wymaga restartu serwisu. 
+
+Opis i instrukcja programu do generacji schemy na podstawie plików z definicjami typów znajdują się tutaj: [generowanie schemy](https://github.com/olagontarz/schema-generator). 
+
+Po przesłaniu nowy plik schema zostaje zapisany w instancji bazy danych redis pod kluczem "schema". Ze względu na fakt, że serwis przystosowany jest do działania w kilku jednoczesnych instancjach (przy użyciu managera procesów pm2), a schema odczytywana jest z redisa tylko przy starcie programu (dla poprawy wydajności), do poprawnego działania programu po przesłaniu nowej schemy będzie wymagany jego restart.
+
+
+- GET /schema - zwraca aktualną schemę, która jest wykorzystywana do walidacji przychodzących eventów.
+
+
+- POST /events - umożliwia przesłanie pojedynczego eventu do systemu.
+
+Przesłanie poprawnie przechodzącego walidację schemą eventu skutkuje odpowiedzią z poprawnym eventem i statusie 200 OK. W przypadku, gdy w programie brakuje schemy, przychodzące eventy są ignorowane i zwracany jest kod 200 wraz z pustym jsonem w odpowiedzi.
+Event niespełniający wymagań schemy również zostanie pominięty, a w odpowiedzi pojawi się kod 400 Bad Request.
+
+Każdy poprawny event zostanie następnie przesłany do każdej z zarejestowalnych usług - w tym przypadku do sysloga i/lub (w zależności od konfiguracji) elasticsearcha. Dla poprawy wydajności, wykorzystany został mechanizm kolejek, które najpierw zbierają określoną liczbę eventów lub odczekują odpowiednio określony czas (aktualnie jest to 5 sekund), a następnie wysyłają swoje zawartości grupowo, "na raz". Liczba równoczesnie działających kolejek i ich pojemności jest konfigurowalna. 
+
+W przypadku sysloga eventy wysłane są poprzez mechanizm socketów po uprzedniej kanonizacji. 
+W bazie elasticsearch nowe eventy zostają dodane do indeksu o nazwie *rok-miesiąc-dzień* (np. 2018-08-22) daty przejścia przez serwis.
+
+
+
+Do celów testowych udostępniona została możliwość przesyłania nowego eventu oraz aktualizowanie schemy z poziomu przeglądarki. Pod adresami */* oraz */schema/update* w przeglądarce pojawia się okno tekstowe z przyciskiem *POST* pozwalającym na wysłanie requestu.
 
 
 
 
 
-REST API serwisu składa się z kilku endpointów:
-- POST /events - umożliwia przesłanie pojedynczego eventu do systemu
-- GET /schema - zwraca format schemy, według którego walidowane się przychodzące eventy
-- POST /schema - pozwala na przesłanie schemy, która używana jest do walidacji, [generowanie schemy](https://github.com/olagontarz/schema-generator)
-- GET /stats - zwraca uproszczone statystyki z działania serwisu od czasu jego uruchomienia - liczbę eventów, które przesłano do serwisu oraz liczbę eventów, która poprawnie przeszły walidację
 
 Zapytania typu POST można wykonać przy użyciu zewnętrznej aplikacji np. Postman albo korzystając z programu curl. JSON, który chcemy przesłać do serwisu (czyli event albo format schemy) powienien znaleźć się w *Body* zapytania.
-
-
-Format każdego przychodzącego pod */events* eventu w formacie JSON jest walidowany zgodnie z zapisaną w pamięci programu schemą. Niepoprawne eventy są ignorowane, natomiast te zgodne ze zdefiniowanym formatem są przekazywane dalej - w zależności od ustawień konfiguracyjnych - do elasticsearcha i/lub sysloga. W obu tych przypadkach, dla poprawy wydajności, został wykorzystany mechanizm kolejek, które zbierają określoną liczbę eventów, a następnie wysyłają je grupowo, "na raz". Liczba równoczesnie działających kolejek i ich pojemności jest konfigurowalna. 
-
-W usłudze elasticsearch, każdy nowy event dodany zostanie do indeksu o nazwie *rok-miesiąc-dzień* (np. 2018-08-22) daty przejścia przez serwis.
-
-Docelowo, serwis zostanie udostępniony jako *docker image* w [rezpozytorium Docker Hub](https://hub.docker.com/u/olagontarz/), skąd w łatwy sposób będzie można go pobrać i uruchomić.
 
 
 
