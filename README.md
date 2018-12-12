@@ -39,104 +39,37 @@ W bazie elasticsearch nowe eventy zostają dodane do indeksu o nazwie *rok-miesi
 Do celów testowych udostępniona została możliwość przesyłania nowego eventu oraz aktualizowanie schemy z poziomu przeglądarki. Pod adresami */* oraz */schema/update* w przeglądarce pojawia się okno tekstowe z przyciskiem *POST* pozwalającym na wysłanie requestu.
 
 
+
+
+
 #### Konfiguracja:
 
+Do poprawnego uruchomienia programu niezbędne jest ustawienie niezbędnych zmiennych środowiskowych w systemie lub uruchomienie programu z plikiem z danymi o porcie, na którym ma zostać uruchomiony serwis oraz o konfiguracji redisa, sysloga i elasticsearcha. W przypadku ustawienia wartości *USE_SYSLOG* i/lub *USE_ELASTIC* na *true*, dodatkowo należy podać hosta i numer portu, na którym uruchomiona jest usługa. Przy wartości *false* dana usługa nie będzie wykorzystana, a więc parametry *host* i *port* zostaną zignorowane. Przykładowa konfiguracja serwisu znajduje się w w pliku *example.env*. 
 
 
 
 
-## Jak uruchomić serwis?
+## Uruchomienie serwisu:
 
-#### Krok 1:
-Zainstalować program [Docker](https://docs.docker.com/install/).
+Aby uruchomić serwis na wybranej maszynie (z zainstalowanym Dockerem) należy:
+* pobrać obraz z Docker Hub: ```docker pull olagontarz/soc-service```
+lub przy braku dostępu do internetu, pobrać obraz tą samą metodą, a następnie zapisać go do pliku z roszerzeniem .docker: 
+```docker save -o soc-service.docker olagontarz/soc-service```
+oraz przenieść go na wybrane środowisko i wgrać do pamięci: ```docker load -i soc-service.docker```
 
-Zweryfikować poprawną instalację komendami:
-```docker --version```
-oraz
-```docker info```
+* przygotować plik konfiguracyjny *.env* z paramaterami do połączenia z redisem, syslogiem i/lub elasticsearchem
+(zgodnie z przykładem *example.env*)
 
-
-#### Krok 2:
-Uruchomić syslog server oraz (opcjonalnie, patrz krok 4) zainstalować i uruchomić [elasticsearch](https://www.elastic.co/downloads/elasticsearch).
-
-
-
-#### Krok 3:
-
-Przygotować plik konfiguracyjny z parametrami uruchomienia serwisu.
-
-Utworzyć nowy plik tekstowy o nazwie *.env* i uzupełnić w nim informację o porcie, na którym ma zostać uruchomiony serwis, o środowisku (tryb *debug* powoduje wysiwetlanie dodatkowych logów podczas działania serwisu) oraz konfiguracji sysloga i elasticsearcha. W przypadku ustawienia wartości *elastic* i/lub *syslog* na *true*, dodatkowo należy podać hosta i numer portu, na którym uruchomiona jest usługa. Przy wartości *false* dana usługa nie będzie wykorzystana, a jej parametry *host* i *port* zostaną zignorowane. 
-
-Przykład:
-```
-NODE_ENV=test
-
-APP_PORT=3000
-APP_DEBUG=true
-
-QUEUE_NUMBER=20
-QUEUE_SIZE=2000
-
-REDIS_HOST='localhost'
-REDIS_PORT=6379
-
-SYSLOG_USE=true
-SYSLOG_HOST='localhost'
-SYSLOG_PORT=514
-
-ELASTIC_USE=false
-ELASTIC_HOST='localhost'
-ELASTIC_PORT=9200
-```
-
-
-#### Krok 4:
-
-Docker image zbudowany z kodu źródłowego znajduję się w Docker Hub pod adresem: https://hub.docker.com/r/olagontarz/soc-service/
-
-##### W przypadku maszyny z dostępem do internetu:
-
-Uruchomić serwis komendą *docker run* z odpowiednim portem jako argumentem *-p*, ścieżką do pliku z konfiguracją *.env* oraz adresem obazu w Docker Hub.
-
-Przykład:
-```
-docker run -p 3000:3000 --env-file .env olagontarz/soc-service
-```
-
-
-##### W przypadku braku dostępu do internetu:
-
-Pobrać obraz na innym urządzeniu (z zainstalowanym Dockerem i z połączeniem z siecią) komendą:
-```
-docker save -o soc-service.docker olagontarz/soc-service
-```
-Przenieść powstały plik *soc-service.docker* na docelową maszynę i wczytać do pamięci:
-```
-docker load -i soc-service.docker
-```
-A następnie uruchomić analogicznie jak w opcji z dostępem do internetu:
-```
-docker run -p 3000:3000 --env-file .env olagontarz/soc-service
-```
-Serwis zostanie uruchomiony na wybranym w konfiguracji porcie na localhost.
+* uruchomić serwis z odpowiednim mapowaniem portów (zgodnym z zawartością plików Dockerfile i .env) oraz ścieżką do pliku z konfiguracją środowiska
+```docker run -p 3000:3000 --env-file=.env soc-service```
 
 
 
-## Jak przetestować działanie serwisu?
 
-#### Opcja 1:
-Pojedyncze zapytanie.
+## Testy za pomocą Apache Benchmark
 
 
-Korzystając z przeglądarki, przejść pod adres *localhost:3000* i polu tekstowym wpisać event w formacie json. Po kliknięciu przycisku *POST*, json zostanie wysłany do serwisu, a następnie, jeśli ma on poprawną strukturę, dodany do sysloga i/lub elasticsearcha (index *events*) w zależności do ustawień w *config.json*. W odpowiedzi zostanie przesłana odpowiedź *OK*. Przykładowy json poprawnie przechodzący walidację można znaleźć w pliku *test.json*. Format jsonów, które uznawane są za poprawne, zdefiniowany jest w pliku *schema.json*.
-
-
-
-#### Opcja 2:
-Wiele jednoczesnych zapytań.
-
-
-W tym przypadku należy pobrać [Apache Benchmark](http://httpd.apache.org/docs/current/programs/ab.html). Po przejściu do folderu, którym znajduje się program ab, poprzez uruchomienie go z konsoli z różnymi parametrami, można dodać wiele eventów za jednym zamachem, a także przetestować szybkość obsługiwania zapytań przez serwis. Przykładowa komenda testująca:
+W tym przypadku należy pobrać program [Apache Benchmark](http://httpd.apache.org/docs/current/programs/ab.html). Po przejściu do folderu, którym znajduje się program ab, poprzez uruchomienie go z konsoli z różnymi parametrami, można dodać wiele eventów za jednym zamachem, a także przetestować szybkość obsługiwania zapytań przez serwis. Przykładowa komenda testująca:
 
 
 ```ab -p test.json -T application/json -n 10000 -c 100 -k http://localhost:3000/events```, gdzie: 
