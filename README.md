@@ -44,7 +44,11 @@ Do celów testowych udostępniona została możliwość przesyłania nowego even
 
 #### Konfiguracja:
 
-Do poprawnego uruchomienia programu niezbędne jest ustawienie niezbędnych zmiennych środowiskowych w systemie lub uruchomienie programu z plikiem z danymi o porcie, na którym ma zostać uruchomiony serwis oraz o konfiguracji redisa, sysloga i elasticsearcha. W przypadku ustawienia wartości *USE_SYSLOG* i/lub *USE_ELASTIC* na *true*, dodatkowo należy podać hosta i numer portu, na którym uruchomiona jest usługa. Przy wartości *false* dana usługa nie będzie wykorzystana, a więc parametry *host* i *port* zostaną zignorowane. Przykładowa konfiguracja serwisu znajduje się w w pliku *example.env*. 
+Do poprawnego uruchomienia programu niezbędne jest ustawienie niezbędnych zmiennych środowiskowych w systemie lub uruchomienie programu z plikiem z danymi o porcie, na którym ma zostać uruchomiony serwis oraz o konfiguracji redisa, sysloga i elasticsearcha. 
+
+W przypadku ustawienia wartości *USE_SYSLOG* i/lub *USE_ELASTIC* na *true*, dodatkowo należy podać hosta i numer portu, na którym uruchomiona jest usługa. Przy wartości *false* dana usługa nie będzie wykorzystana, a więc parametry *host* i *port* zostaną zignorowane. 
+
+Przykładowa konfiguracja serwisu znajduje się w w pliku [example.env](https://github.com/olagontarz/soc-service/blob/master/example.env). 
 
 
 
@@ -52,16 +56,15 @@ Do poprawnego uruchomienia programu niezbędne jest ustawienie niezbędnych zmie
 ## Uruchomienie serwisu:
 
 Aby uruchomić serwis na wybranej maszynie (z zainstalowanym Dockerem) należy:
+
 * pobrać obraz z Docker Hub: ```docker pull olagontarz/soc-service```
-lub przy braku dostępu do internetu, pobrać obraz tą samą metodą, a następnie zapisać go do pliku z roszerzeniem .docker: 
-```docker save -o soc-service.docker olagontarz/soc-service```
-oraz przenieść go na wybrane środowisko i wgrać do pamięci: ```docker load -i soc-service.docker```
+
+* lub przy braku dostępu do internetu, pobrać obraz tą samą metodą, a następnie zapisać go do pliku z roszerzeniem .docker: ```docker save -o soc-service.docker olagontarz/soc-service``` oraz przenieść go na wybrane środowisko i wgrać do pamięci: ```docker load -i soc-service.docker```
 
 * przygotować plik konfiguracyjny *.env* z paramaterami do połączenia z redisem, syslogiem i/lub elasticsearchem
 (zgodnie z przykładem *example.env*)
 
-* uruchomić serwis z odpowiednim mapowaniem portów (zgodnym z zawartością plików Dockerfile i .env) oraz ścieżką do pliku z konfiguracją środowiska
-```docker run -p 3000:3000 --env-file=.env soc-service```
+* uruchomić serwis z odpowiednim mapowaniem portów (zgodnym z zawartością plików .env i Dockerfile) oraz ścieżką do pliku z konfiguracją środowiska: ```docker run -p 3000:3000 --env-file .env soc-service```
 
 
 
@@ -69,7 +72,7 @@ oraz przenieść go na wybrane środowisko i wgrać do pamięci: ```docker load 
 ## Testy za pomocą Apache Benchmark
 
 
-W tym przypadku należy pobrać program [Apache Benchmark](http://httpd.apache.org/docs/current/programs/ab.html). Po przejściu do folderu, którym znajduje się program ab, poprzez uruchomienie go z konsoli z różnymi parametrami, można dodać wiele eventów za jednym zamachem, a także przetestować szybkość obsługiwania zapytań przez serwis. Przykładowa komenda testująca:
+W tym przypadku należy pobrać program [Apache Benchmark](http://httpd.apache.org/docs/current/programs/ab.html). Po przejściu do folderu, którym znajduje się program ab, poprzez uruchomienie go z konsoli z różnymi parametrami, można wysłać wiele requestów "na raz", a przy tym przetestować szybkość obsługiwania zapytań przez serwis. Przykładowa komenda testująca:
 
 
 ```ab -p test.json -T application/json -n 10000 -c 100 -k http://localhost:3000/events```, gdzie: 
