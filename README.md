@@ -7,7 +7,7 @@ Logi, które spełniają określone wymogi zostają następnie przekazane dalej 
 
 #### Schemat działania serwisu:
 
-![soc-service](https://i.ibb.co/M8XCmw8/soc-service.jpg)
+![soc-service](https://i.ibb.co/30VgX4D/soc-service.png)
 
 Serwis przystosowany jest do działania w kontenerze Dockerowym. Aktualny obraz programu zawsze znajduje się w [rezpozytorium Docker Hub](https://hub.docker.com/u/olagontarz/), skąd w łatwy sposób można go pobrać i uruchomić. 
 
