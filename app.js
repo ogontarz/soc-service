@@ -33,6 +33,7 @@ app.use((err, req, res, next) => {
 
 
 app.get('/', (request, response) => {
+  response.statusCode = 200;
   response.sendFile(path.join(__dirname, '/public/events.html'));
 });
 
@@ -65,6 +66,7 @@ app.get('/schema', (request, response) => {
 
 
 app.get('/schema/update', (request, response) => {
+  response.statusCode = 200;
   response.sendFile(path.join(__dirname, '/public/schema.html'));
 });
 
