@@ -13,6 +13,8 @@ Serwis przystosowany jest do działania w kontenerze Dockerowym. Aktualny obraz 
 
 
 
+
+
 #### REST API serwisu składa się z 3 następujących endpointów:
 
 - *POST /schema* - pozwala na przesłanie nowej schemy, na podstawie której będą walidowane kolejne eventy. Wymaga restartu serwisu. 
@@ -66,6 +68,14 @@ Aby uruchomić serwis na wybranej maszynie (z zainstalowanym Dockerem) należy:
 
 * uruchomić serwis z odpowiednim mapowaniem portów (zgodnym z zawartością plików .env i Dockerfile) oraz ścieżką do pliku z konfiguracją środowiska: ```docker run -p 3000:3000 --env-file .env soc-service```
 
+
+
+Po uruchomieniu, za pomocą programu [pm2](http://pm2.keymetrics.io/), zostaną otwarte 4 instancje serwisu, między które zostanie rozdzielony przychodzący ruch. Logi z działania wszystkich instancji zostaną połączone zgodnie z ustawieniami w pliku konfiguracyjnym pm2.json. Serwis loguje przychodzące requesty w wykorzystaniem biblioteki Morgan - zapisywane są wiersze w postaci:
+
+```timestamp id_instancji method_url response_status - response_time_ms - response_length - remote_address```
+
+Dodatkowo zalogowane zostaną poczatkowe informacje o poprawnej konfiguracji połączenia do redisa, sysloga i/lub elasticsearcha.
+Domyśnie logi zostaną wypisane konsolę wywołania programu, co można zmienić [przekierowując stdout i stderr](https://stackoverflow.com/questions/7526971/how-to-redirect-both-stdout-and-stderr-to-a-file) to wybranego pliku/ów.
 
 
 
