@@ -9,7 +9,7 @@ Logi, które spełniają określone wymogi zostają następnie przekazane dalej 
 
 ![soc-service](https://i.ibb.co/30VgX4D/soc-service.png)
 
-Serwis przystosowany jest do działania w kontenerze Dockerowym. Aktualny obraz programu zawsze znajduje się w [rezpozytorium Docker Hub](https://hub.docker.com/u/olagontarz/), skąd w łatwy sposób można go pobrać i uruchomić. 
+Serwis przystosowany jest do działania w kontenerze Dockerowym - specyfikację obrazu opisuje zawartość pliku [Dockerfile]((https://github.com/olagontarz/soc-service/blob/master/Dockerfile). Aktualny obraz programu zawsze znajduje się w [rezpozytorium Docker Hub](https://hub.docker.com/u/olagontarz/), skąd w łatwy sposób można go pobrać i uruchomić. 
 
 
 
@@ -69,8 +69,10 @@ Aby uruchomić serwis na wybranej maszynie (z zainstalowanym Dockerem) należy:
 * uruchomić serwis z odpowiednim mapowaniem portów (zgodnym z zawartością plików .env i Dockerfile) oraz ścieżką do pliku z konfiguracją środowiska: ```docker run -p 3000:3000 --env-file .env soc-service```
 
 
+Serwis uruchomi się na localhost:3000.
 
-Po uruchomieniu, za pomocą programu [pm2](http://pm2.keymetrics.io/), zostaną otwarte 4 instancje serwisu, między które zostanie rozdzielony przychodzący ruch. Logi z działania wszystkich instancji zostaną połączone zgodnie z ustawieniami w pliku konfiguracyjnym pm2.json. Serwis loguje przychodzące requesty w wykorzystaniem biblioteki Morgan - zapisywane są wiersze w postaci:
+
+Po uruchomieniu, ze względu na wykorzystanie [managera procesów pm2](http://pm2.keymetrics.io/), zostaną otwarte 4 instancje serwisu, między które zostanie rozdzielony przychodzący ruch. Logi z działania wszystkich instancji zostaną połączone zgodnie z ustawieniami w pliku konfiguracyjnym [pm2.json](https://github.com/olagontarz/soc-service/blob/master/pm2.json). Serwis loguje przychodzące requesty w wykorzystaniem biblioteki Morgan - zapisywane są wiersze w postaci:
 
 ```timestamp id_instancji method_url response_status - response_time_ms - response_length - remote_address```
 
