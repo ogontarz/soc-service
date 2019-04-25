@@ -52,7 +52,7 @@ app.post('/events', (request, response) => {
       services.forEach(service => service.post(json));
     } else {
       response.statusCode = 400;
-      response.json({ error: 'Incorrect json format' });
+      response.json({ error: 'Incorrect json event format' });
       console.log(JSON.stringify(json, undefined, 2));
     }
   }
