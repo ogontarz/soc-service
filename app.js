@@ -37,25 +37,12 @@ app.get('/', (request, response) => {
   response.sendFile(path.join(__dirname, '/public/events.html'));
 });
 
-
 app.post('/events', (request, response) => {
-  if (schema.isEmpty()) {
-    response.statusCode = 200;
-    response.json({});
-    console.log(`${INSTANCE} No schema file posted - event ignored`);
-  } else {
-    const json = Utils.extractValue(request.body);
-    const validated = schema.validate(json);
-    if (validated) {
-      response.statusCode = 200;
-      response.send(json);
-      services.forEach(service => service.post(json));
-    } else {
-      response.statusCode = 400;
-      response.json({ error: 'Incorrect json event format' });
-      console.log(JSON.stringify(json, undefined, 2));
-    }
-  }
+  const json = request.body;
+  response.statusCode = 200;
+  response.send(json);
+  services.forEach(service => service.post(json));
+  console.log(JSON.stringify(json, undefined, 2));
 });
 
 

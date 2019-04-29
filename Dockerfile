@@ -19,4 +19,4 @@ COPY . /usr/src/app/
 EXPOSE 3000
 
 # Start the service 
-CMD [ "pm2-runtime", "start", "pm2.json" ]
+CMD [ "pm2-runtime", "start", "pm2.json" ] 
