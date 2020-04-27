@@ -19,7 +19,6 @@ Serwis przystosowany jest do działania w kontenerze Dockerowym - specyfikację 
 
 - *POST /schema* - pozwala na przesłanie nowej schemy, na podstawie której będą walidowane kolejne eventy.
 
-Opis i instrukcja programu do generacji schemy na podstawie plików z definicjami typów znajdują się [tutaj](https://github.com/olagontarz/schema-generator). 
 
 Po przesłaniu nowy plik schema zostaje zapisany w instancji bazy danych [redis](https://redis.io/) pod kluczem "schema". Ze względu na fakt, że serwis przystosowany jest do działania w kilku jednoczesnych instancjach (przy użyciu managera procesów pm2), a (dla poprawy wydajności) schema odczytywana jest z redisa tylko przy starcie programu, do poprawnego działania programu po przesłaniu nowej schemy będzie wymagany jego restart.
 
